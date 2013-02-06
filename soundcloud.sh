@@ -13,7 +13,7 @@ fi
 
 if [ -z "$2" ]; then
 	
-	echo "No output path specified. Files will be saved to:" "$output"; exit
+	echo "No output path specified. Files will be downloaded to:" "$output"; exit
 fi
 
 pages=`wget "$1" -q --user-agent 'Mozilla/5.0' -O - | tr '"' "\n" | grep "tracks?" | grep "page=" | awk -F= '{print $NF}' | sort -nu | tail -n 1`
@@ -41,7 +41,7 @@ fi
 echo "[+] Downloading $songcount songs from page $page..."
 
 if [ ! -d "$output" ]; then
-    echo "Folder did not exist. $output";
+    echo "Folder created at: $output";
     mkdir -p $output;
 fi
 
