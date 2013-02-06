@@ -3,10 +3,17 @@
 #hosted on https://github.com/lukapusic/soundcloud-dl/
 #Author: Luka Pusic <luka@pusic.si>
 
-echo "[i] soundcloud.com music downloader by http://360percents.com (wget version)";
+output=${2:-$('pwd')} 
+
+echo "[i] soundcloud.com music downloader by http://360percents.com (wget version)";   
 
 if [ -z "$1" ]; then
 	echo "";echo "[i] Usage: `basename $0` http://soundcloud.com/link_with_tracks_on_page";echo "";exit
+fi
+
+if [ -z "$2" ]; then
+	
+	echo "No output path specified. Files will be saved to:" "$output"; exit
 fi
 
 pages=`wget "$1" -q --user-agent 'Mozilla/5.0' -O - | tr '"' "\n" | grep "tracks?" | grep "page=" | awk -F= '{print $NF}' | sort -nu | tail -n 1`
@@ -33,11 +40,17 @@ fi
 
 echo "[+] Downloading $songcount songs from page $page..."
 
+if [ ! -d "$output" ]; then
+    echo "Folder did not exist. $output";
+    mkdir -p $output;
+fi
+
+
 for (( songid=1; songid <= $songcount; songid++ ))
 do
 	title=`echo "$titles" | sed -n "$songid"p`
 	echo "[-] Downloading $title..."
 	url=`echo "$songs" | sed -n "$songid"p`;
-	wget -c -q --user-agent='Mozilla/5.0' -O "$title.mp3" $url;
+	wget -c -q --user-agent='Mozilla/5.0' -O "$output/$title.mp3" $url;
 done
 done
